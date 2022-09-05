@@ -1,7 +1,10 @@
+from operator import mod
 from typing import Union
 
 import torch
 from torch import nn
+
+from hw1.cs285.policies.MLP_policy import MLPPolicy
 
 Activation = Union[str, nn.Module]
 
@@ -47,7 +50,13 @@ def build_mlp(
 
     # TODO: return a MLP. This should be an instance of nn.Module
     # Note: nn.Sequential is an instance of nn.Module.
-    raise NotImplementedError
+    modules = nn.ModuleList([nn.Linear(input_size, size), activation])
+    for i in range(n_layers-2):
+        modules.append(nn.Linear(size, size))
+        modules.append(activation)
+    modules.append(nn.Linear(size, output_size))
+    modules.append(output_activation)
+    return nn.Sequential(modules)
 
 
 device = None
